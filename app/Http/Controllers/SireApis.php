@@ -31,8 +31,8 @@ public function ConsultaPresupuesto(Request $request){
             throw new Exception("El Parámetro anio es Obligatorio");
         }
         date_default_timezone_set('America/Mexico_City');
-        $date = date("Ymdhis");
-      //  print(    $date );
+        $date = date("YmdHis");
+      // print(    $date );
         $enero       ='"N"';
         $febrero     ='"N"';
         $marzo       ='"N"';
@@ -166,6 +166,7 @@ public function ConsultaPresupuesto(Request $request){
          $req = new Psr7Request('POST', env('APP_SIRE_URL').'/apirest/catalogos/RConsultaClavesPresupuestales', $headers, $body);
          $res = $client->sendAsync($req)->wait();
          $data = json_decode($res->getBody()->getContents());
+
          $response =  $data;
 
     } catch (\Exception $e) {
