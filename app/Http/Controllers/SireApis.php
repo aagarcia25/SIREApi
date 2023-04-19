@@ -31,8 +31,8 @@ public function ConsultaPresupuesto(Request $request){
             throw new Exception("El Parámetro anio es Obligatorio");
         }
         date_default_timezone_set('America/Mexico_City');
-       // $date = date("YmdHis");
-       print(    $date );
+        $date = date("YmdHis");
+      // print(    $date );
         $enero       ='"N"';
         $febrero     ='"N"';
         $marzo       ='"N"';
