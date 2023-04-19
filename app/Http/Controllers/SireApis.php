@@ -30,9 +30,9 @@ public function ConsultaPresupuesto(Request $request){
         if($request->anio ===""){
             throw new Exception("El Parámetro anio es Obligatorio");
         }
-
-        $date = Carbon::now()->toDateTimeString();
-        print(    $date );
+        date_default_timezone_set('America/Mexico_City');
+        $date = date("Ymdhis");
+      //  print(    $date );
         $enero       ='"N"';
         $febrero     ='"N"';
         $marzo       ='"N"';
