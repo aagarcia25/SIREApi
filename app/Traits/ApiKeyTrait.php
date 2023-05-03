@@ -23,16 +23,24 @@ trait ApiKeyTrait{
         }
         return $resultado;
     }
-
 */
+
 
 function generaHMAC($ApiPublic, $ApiSecret, $FechaHoraSolicitud, $MetodoRemoto)
 {
     $Result = ''; // Inicializa la variable Result
     try {
-        $Cadena = trim($FechaHoraSolicitud) . trim($MetodoRemoto) . trim($ApiPublic); // Crea la cadena para firmar con la llave API
-        $hash = hash_hmac('sha1', $Cadena, $ApiSecret, true); // Genera el HMAC con la llave secreta
-        $Result = base64_encode($hash); // Codifica el HMAC en base64 y asigna el valor a la variable Result
+       // $Cadena = trim($FechaHoraSolicitud) . trim($MetodoRemoto) . trim($ApiPublic); // Crea la cadena para firmar con la llave API
+       // $hash = hash_hmac('sha1', $Cadena, $ApiSecret, true); // Genera el HMAC con la llave secreta
+       // $Result = base64_encode($hash); // Codifica el HMAC en base64 y asigna el valor a la variable Result
+
+        $cadena = trim($FechaHoraSolicitud) . trim($MetodoRemoto) . trim($ApiPublic);
+        $cadena = hash('sha1', $cadena, false); // Se encripta la cadena utilizando SHA1
+        $key = utf8_encode($ApiSecret);
+        $ahmac = hash_hmac('sha1', $cadena, $key, true);
+        $Result= base64_encode($ahmac); // Codifica y asigna el valor del HMAC a la variable ApiKeyAux
+
+
     } catch (Exception $e) {
         $Result = $e->getMessage(); // Regresa un error si es encontrado
     }

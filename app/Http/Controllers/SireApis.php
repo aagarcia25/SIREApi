@@ -3,12 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Traits\ApiKeyTrait;
-use Carbon\Carbon;
 use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Request as Psr7Request;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 class SireApis extends Controller {
 
     use ApiKeyTrait;
@@ -187,34 +185,5 @@ public function ConsultaPresupuesto(Request $request){
 }
 
 
-public function SelectIndex(Request $request)
-{
 
-
-    $SUCCESS = true;
-    $NUMCODE = 0;
-    $STRMESSAGE = 'Exito';
-    $response = "";
-
-    try {
-        $response ="EJEMPLO DE RESPUESTA";
-        /*
-        $response = DB::select("SELECT  rm.*,rl.Menu menupadre  FROM  REPCENTRAL.Menus rm
-        LEFT JOIN REPCENTRAL.Menus rl ON rm.MenuPadre = rl.id
-        WHERE rm.deleted=0 ORDER BY rm.nivel ");*/
-    } catch (\Exception $e) {
-        $NUMCODE = 1;
-        $STRMESSAGE = $e->getMessage();
-        $SUCCESS = false;
-    }
-
-    return response()->json(
-        [
-            'NUMCODE' => $NUMCODE,
-            'STRMESSAGE' => $STRMESSAGE,
-            'RESPONSE' => $response,
-            'SUCCESS' => $SUCCESS
-        ]
-    );
-}
 }
