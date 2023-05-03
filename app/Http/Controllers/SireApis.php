@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Traits\ApiKeyTrait;
 use Carbon\Carbon;
 use Exception;
 use GuzzleHttp\Client;
@@ -10,7 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 class SireApis extends Controller {
 
-
+    use ApiKeyTrait;
 
 public function ConsultaPresupuesto(Request $request){
 
@@ -32,7 +33,10 @@ public function ConsultaPresupuesto(Request $request){
         }
         date_default_timezone_set('America/Mexico_City');
         $date = date("YmdHis");
-      // print(    $date );
+        $public  =  env('APP_SIRE_API_PUBLIC');
+        $private =  env('APP_SIRE_API_SECRET');
+        $firma =  $this->generaHMAC($public,$private,$date ,'RConsultaClavesPresupuestales');
+
         $enero       ='"N"';
         $febrero     ='"N"';
         $marzo       ='"N"';
@@ -91,9 +95,9 @@ public function ConsultaPresupuesto(Request $request){
     "Input": {
       "Request": {
         "Acceso": {
-          "ApiPublic": "HIRMZQRKWB",
-          "Firma": "297E6DBA0A3428F60A68EBBBDAE4D3E310342E2A",
-          "Fecha": '.$date.'
+          "ApiPublic":"'.$public.'",
+          "Firma":"'.$firma.'",
+          "Fecha":"'.$date.'"
         },
         "ConsultaDatosClaves": {
           "TipoCvePresupuestal": "E6",
@@ -154,21 +158,17 @@ public function ConsultaPresupuesto(Request $request){
     }
   }';
 
+        print(    $firma );
+      //  print(    $date );
 
-
-       $client = new Client();
+        $client = new Client();
         $headers = [
                    'Content-Type' => 'application/json'
                    ];
-
-
-
          $req = new Psr7Request('POST', env('APP_SIRE_URL').'/apirest/catalogos/RConsultaClavesPresupuestales', $headers, $body);
          $res = $client->sendAsync($req)->wait();
          $data = json_decode($res->getBody()->getContents());
-
          $response =  $data;
-
     } catch (\Exception $e) {
         $NUMCODE = 1;
         $STRMESSAGE = $e->getMessage();
