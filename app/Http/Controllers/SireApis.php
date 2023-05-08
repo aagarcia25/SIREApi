@@ -33,7 +33,7 @@ public function ConsultaPresupuesto(Request $request){
         $date = date("YmdHis");
         $public  =  env('APP_SIRE_API_PUBLIC');
         $private =  env('APP_SIRE_API_SECRET');
-        $firma =  $this->generaHMAC($public,$private,$date ,'RConsultaClavesPresupuestales');
+        $firma =  $this->generaHMAC($public,$private,'RConsultaClavesPresupuestales');
 
         $enero       ='"N"';
         $febrero     ='"N"';
@@ -98,7 +98,7 @@ public function ConsultaPresupuesto(Request $request){
           "Fecha":"'.$date.'"
         },
         "ConsultaDatosClaves": {
-          "TipoCvePresupuestal": "E6",
+          "TipoCvePresupuestal": "'.env('APP_SIRE_API_EJERCICIO').'" ,
           "Periodo": '.$request->anio.',
           "CargarSaldos": "S",
           "CodigosClasificadores": {
@@ -156,7 +156,7 @@ public function ConsultaPresupuesto(Request $request){
     }
   }';
 
-        print(    $firma );
+       // print(    $body );
       //  print(    $date );
 
         $client = new Client();
