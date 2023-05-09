@@ -166,7 +166,17 @@ public function ConsultaPresupuesto(Request $request){
          $req = new Psr7Request('POST', env('APP_SIRE_URL').'/apirest/catalogos/RConsultaClavesPresupuestales', $headers, $body);
          $res = $client->sendAsync($req)->wait();
          $data = json_decode($res->getBody()->getContents());
-         $response =  $data;
+         if($data->Result->Response->Error){
+            throw new Exception($data->Result->Response->Error);
+         }else{
+            $response=  $data->Result->Response->Claves->Clave;
+
+         }
+
+
+
+
+
     } catch (\Exception $e) {
         $NUMCODE = 1;
         $STRMESSAGE = $e->getMessage();
