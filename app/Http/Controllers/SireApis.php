@@ -49,40 +49,40 @@ public function ConsultaPresupuesto(Request $request){
         $diciembre   ='"N"';
 
         switch ($request->mes) {
-            case 'Enero':
+            case 1:
                 $enero ='"S"';
                 break;
-            case 'Febrero':
+            case 2:
                 $febrero ='"S"';
                 break;
-            case 'Marzo':
+            case 3:
                 $marzo ='"S"';
                 break;
-            case 'Abril':
+            case 4:
                  $abril ='"S"';
                  break;
-            case 'Mayo':
+            case 5:
                  $mayo ='"S"';
                  break;
-            case 'Junio':
+            case 6:
                   $junio ='"S"';
                   break;
-            case 'Julio':
+            case 7:
                   $julio ='"S"';
                   break;
-            case 'Agosto':
+            case 8:
                   $agosto ='"S"';
                   break;
-            case 'Septiembre':
+            case 9:
                   $septiembre ='"S"';
                   break;
-            case 'Octubre':
+            case 10:
                   $octubre ='"S"';
                   break;
-            case 'Noviembre':
+            case 11:
                   $noviembre ='"S"';
                   break;
-             case 'Diciembre':
+             case 12:
                   $diciembre ='"S"';
                   break;
         }
