@@ -19,9 +19,5 @@ use Illuminate\Support\Facades\Route;
 Route::group([
     'prefix' => 'ApiSire'
 ], function () {
-
         Route::post('ConsultaPresupuesto', [SireApis::class,'ConsultaPresupuesto']);
-
-        Route::post('SelectIndex',[SireApis::class,'SelectIndex']);
-
 });

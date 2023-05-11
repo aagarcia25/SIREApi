@@ -2,15 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use Carbon\Carbon;
+use App\Traits\ApiKeyTrait;
 use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Request as Psr7Request;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 class SireApis extends Controller {
 
-
+    use ApiKeyTrait;
 
 public function ConsultaPresupuesto(Request $request){
 
@@ -32,7 +31,10 @@ public function ConsultaPresupuesto(Request $request){
         }
         date_default_timezone_set('America/Mexico_City');
         $date = date("YmdHis");
-      // print(    $date );
+        $public  =  env('APP_SIRE_API_PUBLIC');
+        $private =  env('APP_SIRE_API_SECRET');
+        $firma =  $this->generaHMAC($public,$private,'RConsultaClavesPresupuestales');
+
         $enero       ='"N"';
         $febrero     ='"N"';
         $marzo       ='"N"';
@@ -47,40 +49,40 @@ public function ConsultaPresupuesto(Request $request){
         $diciembre   ='"N"';
 
         switch ($request->mes) {
-            case 'Enero':
+            case 1:
                 $enero ='"S"';
                 break;
-            case 'Febrero':
+            case 2:
                 $febrero ='"S"';
                 break;
-            case 'Marzo':
+            case 3:
                 $marzo ='"S"';
                 break;
-            case 'Abril':
+            case 4:
                  $abril ='"S"';
                  break;
-            case 'Mayo':
+            case 5:
                  $mayo ='"S"';
                  break;
-            case 'Junio':
+            case 6:
                   $junio ='"S"';
                   break;
-            case 'Julio':
+            case 7:
                   $julio ='"S"';
                   break;
-            case 'Agosto':
+            case 8:
                   $agosto ='"S"';
                   break;
-            case 'Septiembre':
+            case 9:
                   $septiembre ='"S"';
                   break;
-            case 'Octubre':
+            case 10:
                   $octubre ='"S"';
                   break;
-            case 'Noviembre':
+            case 11:
                   $noviembre ='"S"';
                   break;
-             case 'Diciembre':
+             case 12:
                   $diciembre ='"S"';
                   break;
         }
@@ -91,12 +93,12 @@ public function ConsultaPresupuesto(Request $request){
     "Input": {
       "Request": {
         "Acceso": {
-          "ApiPublic": "HIRMZQRKWB",
-          "Firma": "297E6DBA0A3428F60A68EBBBDAE4D3E310342E2A",
-          "Fecha": '.$date.'
+          "ApiPublic":"'.$public.'",
+          "Firma":"'.$firma.'",
+          "Fecha":"'.$date.'"
         },
         "ConsultaDatosClaves": {
-          "TipoCvePresupuestal": "E6",
+          "TipoCvePresupuestal": "'.env('APP_SIRE_API_EJERCICIO').'" ,
           "Periodo": '.$request->anio.',
           "CargarSaldos": "S",
           "CodigosClasificadores": {
@@ -154,20 +156,26 @@ public function ConsultaPresupuesto(Request $request){
     }
   }';
 
+       // print(    $body );
+      //  print(    $date );
 
-
-       $client = new Client();
+        $client = new Client();
         $headers = [
                    'Content-Type' => 'application/json'
                    ];
-
-
-
          $req = new Psr7Request('POST', env('APP_SIRE_URL').'/apirest/catalogos/RConsultaClavesPresupuestales', $headers, $body);
          $res = $client->sendAsync($req)->wait();
          $data = json_decode($res->getBody()->getContents());
+         if($data->Result->Response->Error){
+            throw new Exception($data->Result->Response->Error);
+         }else{
+            $response=  $data->Result->Response->Claves->Clave;
 
-         $response =  $data;
+         }
+
+
+
+
 
     } catch (\Exception $e) {
         $NUMCODE = 1;
@@ -187,34 +195,5 @@ public function ConsultaPresupuesto(Request $request){
 }
 
 
-public function SelectIndex(Request $request)
-{
 
-
-    $SUCCESS = true;
-    $NUMCODE = 0;
-    $STRMESSAGE = 'Exito';
-    $response = "";
-
-    try {
-        $response ="EJEMPLO DE RESPUESTA";
-        /*
-        $response = DB::select("SELECT  rm.*,rl.Menu menupadre  FROM  REPCENTRAL.Menus rm
-        LEFT JOIN REPCENTRAL.Menus rl ON rm.MenuPadre = rl.id
-        WHERE rm.deleted=0 ORDER BY rm.nivel ");*/
-    } catch (\Exception $e) {
-        $NUMCODE = 1;
-        $STRMESSAGE = $e->getMessage();
-        $SUCCESS = false;
-    }
-
-    return response()->json(
-        [
-            'NUMCODE' => $NUMCODE,
-            'STRMESSAGE' => $STRMESSAGE,
-            'RESPONSE' => $response,
-            'SUCCESS' => $SUCCESS
-        ]
-    );
-}
 }
