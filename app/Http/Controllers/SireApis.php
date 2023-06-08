@@ -271,7 +271,7 @@ public function ConsultaPresupuestoAnual(Request $request){
           }
         }
       }';
-
+       print(    $body );
       $client = new Client();
       $headers = ['Content-Type' => 'application/json'];
       $req = new Psr7Request('POST', env('APP_SIRE_URL').'/apirest/catalogos/RConsultaClavesPresupuestales', $headers, $body);
