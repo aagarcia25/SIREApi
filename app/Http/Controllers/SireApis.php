@@ -200,10 +200,6 @@ public function ConsultaPresupuestoAnual(Request $request){
   $STRMESSAGE = 'Exito';
   $response = "";
   try {
-      if($request->mes ===""){
-          throw new Exception("El Parámetro mes es Obligatorio");
-      }
-     
       if($request->anio ===""){
           throw new Exception("El Parámetro anio es Obligatorio");
       }
