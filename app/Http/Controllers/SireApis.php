@@ -276,6 +276,7 @@ public function ConsultaPresupuestoAnual(Request $request){
       $headers = ['Content-Type' => 'application/json'];
       $req = new Psr7Request('POST', env('APP_SIRE_URL').'/apirest/catalogos/RConsultaClavesPresupuestales', $headers, $body);
       $res = $client->sendAsync($req)->wait();
+      print(   "res: " + $res );
       $data = json_decode($res->getBody()->getContents());
 
       if ($data->Result->Response->Error) {
@@ -284,8 +285,10 @@ public function ConsultaPresupuestoAnual(Request $request){
           $response = $data->Result->Response->Claves->Clave;
 //Después de obtener la respuesta de la API, se realiza una suma de los momentos contables utilizando array_sum() en el objeto $response.
           $sumaMomentos = array_sum((array) $response);
+          print(   "sumaMomentos: " + $sumaMomentos );
 //El resultado de la suma se asigna a un nuevo array $response con la clave "SumaMomentos".
           $response = ['SumaMomentos' => $sumaMomentos];
+          print(   "response: " + $response );
       }
     } catch (\Exception $e) {
         $NUMCODE = 1;
