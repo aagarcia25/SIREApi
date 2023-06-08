@@ -215,7 +215,24 @@ public function ConsultaPresupuestoAnual(Request $request){
         "Estimado",
         "Aprobado",
         "Ampliacion",
-
+        "Reduccion",
+        "Transferencia_Aumento",
+        "Transferencia_Reduccion",
+        "Saldo",
+        "PreComprometer",
+        "Disponible",
+        "Comprometido",
+        "PreComprometido_Sin_Comprometer",
+        "Para_PreComprometer",
+        "Devengado",
+        "No_Devengado",
+        "PreComprometido_Sin_Deven",
+        "Ejercido",
+        "Recaudado",
+        "Devengado_Sin_Ejerc",
+        "Pagado",
+        "Ejercido_Sin_Pagar",
+        "PorPagar"
     ];
     
 //Se crea un array $momentos que utiliza los momentos contables como claves y establece el valor de cada momento en "S".
