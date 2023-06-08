@@ -213,7 +213,7 @@ public function ConsultaPresupuestoAnual(Request $request){
       $public  =  env('APP_SIRE_API_PUBLIC');
       $private =  env('APP_SIRE_API_SECRET');
       $firma =  $this->generaHMAC($public,$private,'RConsultaClavesPresupuestales');
-      
+
 //Se crea un array llamado $momentosContables que contiene todos los momentos contables requeridos.
       $momentosContables = [
         "Estimado",
@@ -238,11 +238,13 @@ public function ConsultaPresupuestoAnual(Request $request){
         "Ejercido_Sin_Pagar",
         "PorPagar"
     ];
+    
+//Se crea un array $momentos que utiliza los momentos contables como claves y establece el valor de cada momento en "S".
     $momentos = [];
     foreach ($momentosContables as $momento) {
         $momentos[$momento] = "S";
     }
-
+//Dentro del cuerpo de la solicitud JSON, se utiliza json_encode() para convertir el array $momentos en un objeto JSON válido.
     $body = '{
         "Input": {
           "Request": {
@@ -284,8 +286,9 @@ public function ConsultaPresupuestoAnual(Request $request){
           throw new Exception($data->Result->Response->Error);
       } else {
           $response = $data->Result->Response->Claves->Clave;
-          // Suma los momentos contables para obtener el resultado final
+//Después de obtener la respuesta de la API, se realiza una suma de los momentos contables utilizando array_sum() en el objeto $response.
           $sumaMomentos = array_sum((array) $response);
+//El resultado de la suma se asigna a un nuevo array $response con la clave "SumaMomentos".
           $response = ['SumaMomentos' => $sumaMomentos];
       }
     } catch (\Exception $e) {
@@ -293,7 +296,9 @@ public function ConsultaPresupuestoAnual(Request $request){
         $STRMESSAGE = $e->getMessage();
         $SUCCESS = false;
     }
-
+    /*La función devuelve la respuesta en formato JSON, incluyendo el nuevo array $response 
+    que contiene la suma de los momentos contables correspondientes a todos los meses 
+    y al año especificado.*/
     return response()->json([
         'NUMCODE' => $NUMCODE,
         'STRMESSAGE' => $STRMESSAGE,
