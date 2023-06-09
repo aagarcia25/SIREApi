@@ -290,7 +290,7 @@ public function ConsultaPresupuestoAnual(Request $request){
           
 //El resultado de la suma se asigna a un nuevo array $response con la clave "SumaMomentos".
           $response = ['SumaMomentos' => $sumaMomentos];
-          print(   "response: " + $response );
+          //print(   "response: " + $response );
       }
     } catch (\Exception $e) {
         $NUMCODE = 1;
