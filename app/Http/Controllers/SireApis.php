@@ -273,7 +273,7 @@ public function ConsultaPresupuestoAnual(Request $request){
           }
         }
       }';
-      print( 'Último error: '+ json_last_error_msg());
+      print(  json_last_error_msg());
        print(    $body );
       $client = new Client();
       $headers = ['Content-Type' => 'application/json'];
