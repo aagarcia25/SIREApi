@@ -268,10 +268,12 @@ public function ConsultaPresupuestoAnual(Request $request){
                 "Clasificador11":"'.  $request->clasificador11.'"
               },
               "MomentosContables": '.json_encode($momentos).'
+              
             }
           }
         }
       }';
+      print( 'Último error: '+ json_last_error_msg());
        print(    $body );
       $client = new Client();
       $headers = ['Content-Type' => 'application/json'];
