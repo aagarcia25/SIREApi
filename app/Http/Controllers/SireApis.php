@@ -239,6 +239,7 @@ public function ConsultaPresupuestoAnual(Request $request){
     $momentos = [];
     foreach ($momentosContables as $momento) {
         $momentos[$momento] = "S";
+        print($momentos);
     }
 //Dentro del cuerpo de la solicitud JSON, se utiliza json_encode() para convertir el array $momentos en un objeto JSON válido.
     $body = '{
