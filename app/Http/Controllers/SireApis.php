@@ -194,6 +194,121 @@ public function ConsultaPresupuesto(Request $request){
 
 }
 
+public function ConsultaPresupuestoAnual(Request $request){
+  $SUCCESS = true;
+  $NUMCODE = 0;
+  $STRMESSAGE = 'Exito';
+  $response = "";
+  try {
+      if($request->anio ===""){
+          throw new Exception("El Parámetro anio es Obligatorio");
+      }
 
+      date_default_timezone_set('America/Mexico_City');
+      $date = date("YmdHis");
+      $public  =  env('APP_SIRE_API_PUBLIC');
+      $private =  env('APP_SIRE_API_SECRET');
+      $firma =  $this->generaHMAC($public,$private,'RConsultaClavesPresupuestales');
+
+//Se crea un array llamado $momentosContables que contiene todos los momentos contables requeridos.
+      $momentosContables = [
+        "Estimado",
+        "Aprobado",
+        "Ampliacion",
+        "Reduccion",
+        "Transferencia_Aumento",
+        "Transferencia_Reduccion",
+        "Saldo",
+        "PreComprometer",
+        "Disponible",
+        "Comprometido",
+        "PreComprometido_Sin_Comprometer",
+        "Para_PreComprometer",
+        "Devengado",
+        "No_Devengado",
+        "PreComprometido_Sin_Deven",
+        "Ejercido",
+        "Recaudado",
+        "Devengado_Sin_Ejerc",
+        "Pagado",
+        "Ejercido_Sin_Pagar",
+        "PorPagar"
+    ];
+    
+//Se crea un array $momentos que utiliza los momentos contables como claves y establece el valor de cada momento en "S".
+    $momentos = [];
+    foreach ($momentosContables as $momento) {
+        $momentos[$momento] = "S";
+        if($momento == $momentos){
+print('ultimo');
+        }
+      //--  print($momentos);
+    }
+//Dentro del cuerpo de la solicitud JSON, se utiliza json_encode() para convertir el array $momentos en un objeto JSON válido.
+    $body = '{
+        "Input": {
+          "Request": {
+            "Acceso": {
+              "ApiPublic":"'.$public.'",
+              "Firma":"'.$firma.'",
+              "Fecha":"'.$date.'"
+            },
+            "ConsultaDatosClaves": {
+              "TipoCvePresupuestal": "'.env('APP_SIRE_API_EJERCICIO').'" ,
+              "Periodo": '.$request->anio.',
+              "CargarSaldos": "S",
+              "CodigosClasificadores": {
+                "Clasificador1": "'.  $request->clasificador1.'",
+                "Clasificador2": "'.  $request->clasificador2.'",
+                "Clasificador3": "'.  $request->clasificador3.'",
+                "Clasificador4": "'.  $request->clasificador4.'",
+                "Clasificador5": "'.  $request->clasificador5.'",
+                "Clasificador6": "'.  $request->clasificador6.'",
+                "Clasificador7": "'.  $request->clasificador7.'",
+                "Clasificador8": "'.  $request->clasificador8.'",
+                "Clasificador9": "'.  $request->clasificador9.'",
+                "Clasificador10":"'.  $request->clasificador10.'",
+                "Clasificador11":"'.  $request->clasificador11.'"
+              },
+              "MomentosContables": '.json_encode($momentos).'
+              
+            }
+          }
+        }
+      }';
+      print(  json_last_error_msg());
+       print(    $body );
+      $client = new Client();
+      $headers = ['Content-Type' => 'application/json'];
+      $req = new Psr7Request('POST', env('APP_SIRE_URL').'/apirest/catalogos/RConsultaClavesPresupuestales', $headers, $body);
+      $res = $client->sendAsync($req)->wait();
+      $data = json_decode($res->getBody()->getContents());
+
+      if ($data->Result->Response->Error) {
+          throw new Exception($data->Result->Response->Error);
+      } else {
+          $response = $data->Result->Response->Claves->Clave;
+//Después de obtener la respuesta de la API, se realiza una suma de los momentos contables utilizando array_sum() en el objeto $response.
+          $sumaMomentos = array_sum((array) $response);
+          
+//El resultado de la suma se asigna a un nuevo array $response con la clave "SumaMomentos".
+          $response = ['SumaMomentos' => $sumaMomentos];
+          //print(   "response: " + $response );
+      }
+    } catch (\Exception $e) {
+        $NUMCODE = 1;
+        $STRMESSAGE = $e->getMessage();
+        $SUCCESS = false;
+    }
+    /*La función devuelve la respuesta en formato JSON, incluyendo el nuevo array $response 
+    que contiene la suma de los momentos contables correspondientes a todos los meses 
+    y al año especificado.*/
+    return response()->json([
+        'NUMCODE' => $NUMCODE,
+        'STRMESSAGE' => $STRMESSAGE,
+        'RESPONSE' => $response,
+        'SUCCESS' => $SUCCESS
+    ]);
+  }
 
 }
