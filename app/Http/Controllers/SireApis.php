@@ -324,6 +324,11 @@ public function ConsultaPresupuestoAnual(Request $request){
        $req = new Psr7Request('POST', env('APP_SIRE_URL').'/apirest/catalogos/RConsultaClavesPresupuestales', $headers, $body);
        $res = $client->sendAsync($req)->wait();
        $data = json_decode($res->getBody()->getContents());
+    //  var_dump($data);
+       if($data === null){
+        throw new Exception('Servicio SIREGOB No Disponible');
+       }
+
        if($data->Result->Response->Error){
           throw new Exception($data->Result->Response->Error);
        }else{
