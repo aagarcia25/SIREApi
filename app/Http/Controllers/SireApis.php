@@ -327,9 +327,9 @@ public function ConsultaPresupuestoAnual(Request $request){
     //  var_dump($data);
        if($data === null){
         throw new Exception('Servicio SIREGOB No Disponible');
-       }
+       }else{
 
-       if($data->Result->Response->Error){
+        if($data->Result->Response->Error){
           throw new Exception($data->Result->Response->Error);
        }else{
           $response= $data->Result->Response->Claves->Clave;
@@ -353,6 +353,10 @@ public function ConsultaPresupuestoAnual(Request $request){
         }
 
        }
+
+       }
+
+     
 
 
        $responses = [
