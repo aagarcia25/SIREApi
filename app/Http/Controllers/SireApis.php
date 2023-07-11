@@ -22,8 +22,6 @@ public function ConsultaPresupuesto(Request $request){
     $response = "";
     try {
 
-       // print(    $request );
-
         if($request->mes ===""){
             throw new Exception("El Parámetro mes es Obligatorio");
         }
@@ -35,8 +33,9 @@ public function ConsultaPresupuesto(Request $request){
         $date = date("YmdHis");
         $public  =  env('APP_SIRE_API_PUBLIC');
         $private =  env('APP_SIRE_API_SECRET');
+     
         $firma =  $this->generaHMAC($public,$private,'RConsultaClavesPresupuestales');
-
+  
         $enero       ='"N"';
         $febrero     ='"N"';
         $marzo       ='"N"';
@@ -158,16 +157,22 @@ public function ConsultaPresupuesto(Request $request){
     }
   }';
 
-       // print(    $body );
-      //  print(    $date );
-
+       var_dump($body);
         $client = new Client();
         $headers = [
                    'Content-Type' => 'application/json'
                    ];
          $req = new Psr7Request('POST', env('APP_SIRE_URL').'/apirest/catalogos/RConsultaClavesPresupuestales', $headers, $body);
          $res = $client->sendAsync($req)->wait();
+      
          $data = json_decode($res->getBody()->getContents());
+        
+         if($data === null){
+          var_dump($data);
+          throw new Exception('Servicio SIREGOB No Disponible');
+         }
+
+
          if($data->Result->Response->Error){
             throw new Exception($data->Result->Response->Error);
          }else{
@@ -207,9 +212,6 @@ public function ConsultaPresupuestoAnual(Request $request){
   $response = "";
   $responses= "";
   try {
-
-    
-
 
       if($request->anio ===""){
           throw new Exception("El Parámetro anio es Obligatorio");
@@ -323,8 +325,9 @@ public function ConsultaPresupuestoAnual(Request $request){
                  ];
        $req = new Psr7Request('POST', env('APP_SIRE_URL').'/apirest/catalogos/RConsultaClavesPresupuestales', $headers, $body);
        $res = $client->sendAsync($req)->wait();
+      
        $data = json_decode($res->getBody()->getContents());
-    //  var_dump($data);
+   
        if($data === null){
         throw new Exception('Servicio SIREGOB No Disponible');
        }else{
