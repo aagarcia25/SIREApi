@@ -124,8 +124,8 @@ public function ConsultaPresupuesto(Request $request){
             "Transferencia_Reduccion": "N",
             "Saldo": "N",
             "PreComprometer": "N",
-            "Disponible": "N",
-            "Comprometido": "S",
+            "Disponible": "S",
+            "Comprometido": "N",
             "PreComprometido_Sin_Comprometer": "N",
             "Para_PreComprometer": "N",
             "Devengado": "N",
@@ -157,7 +157,9 @@ public function ConsultaPresupuesto(Request $request){
     }
   }';
 
-       var_dump($body);
+   
+
+       
         $client = new Client();
         $headers = [
                    'Content-Type' => 'application/json'
@@ -168,17 +170,20 @@ public function ConsultaPresupuesto(Request $request){
          $data = json_decode($res->getBody()->getContents());
         
          if($data === null){
-          var_dump($data);
           throw new Exception('Servicio SIREGOB No Disponible');
-         }
+         }else{
 
-
-         if($data->Result->Response->Error){
+          if($data->Result->Response->Error){
             throw new Exception($data->Result->Response->Error);
          }else{
             $response=  $data->Result->Response->Claves->Clave;
 
          }
+
+         }
+
+
+       
 
 
 
