@@ -7,113 +7,137 @@ use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Request as Psr7Request;
 use Illuminate\Http\Request;
-use PhpParser\Node\Expr\Print_;
 
-class SireApis extends Controller {
+class SireApis extends Controller
+{
 
     use ApiKeyTrait;
 
-public function ConsultaPresupuesto(Request $request){
+    public function validacion(Request $request)
+    {
 
+        $SUCCESS = true;
+        $NUMCODE = 0;
+        $STRMESSAGE = 'Exito';
+        $response = "";
 
-    $SUCCESS = true;
-    $NUMCODE = 0;
-    $STRMESSAGE = 'Exito';
-    $response = "";
-    try {
-
-        if($request->mes ===""){
-            throw new Exception("El Parámetro mes es Obligatorio");
+        try {
+            $response = "Servicios Funcionando";
+        } catch (\Exception $e) {
+            $NUMCODE = 1;
+            $STRMESSAGE = $e->getMessage();
+            $SUCCESS = false;
         }
 
-        if($request->anio ===""){
-            throw new Exception("El Parámetro anio es Obligatorio");
-        }
-        date_default_timezone_set('America/Mexico_City');
-        $date = date("YmdHis");
-        $public  =  env('APP_SIRE_API_PUBLIC');
-        $private =  env('APP_SIRE_API_SECRET');
-     
-        $firma =  $this->generaHMAC($public,$private,'RConsultaClavesPresupuestales');
-  
-        $enero       ='"N"';
-        $febrero     ='"N"';
-        $marzo       ='"N"';
-        $abril       ='"N"';
-        $mayo        ='"N"';
-        $junio       ='"N"';
-        $julio       ='"N"';
-        $agosto      ='"N"';
-        $septiembre  ='"N"';
-        $octubre     ='"N"';
-        $noviembre   ='"N"';
-        $diciembre   ='"N"';
+        return response()->json(
+            [
+                'NUMCODE' => $NUMCODE,
+                'STRMESSAGE' => $STRMESSAGE,
+                'RESPONSE' => $response,
+                'SUCCESS' => $SUCCESS,
+            ]
+        );
+    }
 
-        switch ($request->mes) {
-            case 1:
-                $enero ='"S"';
-                break;
-            case 2:
-                $febrero ='"S"';
-                break;
-            case 3:
-                $marzo ='"S"';
-                break;
-            case 4:
-                 $abril ='"S"';
-                 break;
-            case 5:
-                 $mayo ='"S"';
-                 break;
-            case 6:
-                  $junio ='"S"';
-                  break;
-            case 7:
-                  $julio ='"S"';
-                  break;
-            case 8:
-                  $agosto ='"S"';
-                  break;
-            case 9:
-                  $septiembre ='"S"';
-                  break;
-            case 10:
-                  $octubre ='"S"';
-                  break;
-            case 11:
-                  $noviembre ='"S"';
-                  break;
-             case 12:
-                  $diciembre ='"S"';
-                  break;
-        }
+    public function ConsultaPresupuesto(Request $request)
+    {
 
+        $SUCCESS = true;
+        $NUMCODE = 0;
+        $STRMESSAGE = 'Exito';
+        $response = "";
+        try {
 
+            if ($request->mes === "") {
+                throw new Exception("El Parámetro mes es Obligatorio");
+            }
 
-      $body = '{
+            if ($request->anio === "") {
+                throw new Exception("El Parámetro anio es Obligatorio");
+            }
+            date_default_timezone_set('America/Mexico_City');
+            $date = date("YmdHis");
+            $public = env('APP_SIRE_API_PUBLIC');
+            $private = env('APP_SIRE_API_SECRET');
+
+            $firma = $this->generaHMAC($public, $private, 'RConsultaClavesPresupuestales');
+
+            $enero = '"N"';
+            $febrero = '"N"';
+            $marzo = '"N"';
+            $abril = '"N"';
+            $mayo = '"N"';
+            $junio = '"N"';
+            $julio = '"N"';
+            $agosto = '"N"';
+            $septiembre = '"N"';
+            $octubre = '"N"';
+            $noviembre = '"N"';
+            $diciembre = '"N"';
+
+            switch ($request->mes) {
+                case 1:
+                    $enero = '"S"';
+                    break;
+                case 2:
+                    $febrero = '"S"';
+                    break;
+                case 3:
+                    $marzo = '"S"';
+                    break;
+                case 4:
+                    $abril = '"S"';
+                    break;
+                case 5:
+                    $mayo = '"S"';
+                    break;
+                case 6:
+                    $junio = '"S"';
+                    break;
+                case 7:
+                    $julio = '"S"';
+                    break;
+                case 8:
+                    $agosto = '"S"';
+                    break;
+                case 9:
+                    $septiembre = '"S"';
+                    break;
+                case 10:
+                    $octubre = '"S"';
+                    break;
+                case 11:
+                    $noviembre = '"S"';
+                    break;
+                case 12:
+                    $diciembre = '"S"';
+                    break;
+            }
+
+            $body = '{
     "Input": {
       "Request": {
         "Acceso": {
-          "ApiPublic":"'.$public.'",
-          "Firma":"'.$firma.'",
-          "Fecha":"'.$date.'"
+          "ApiPublic":"' . $public . '",
+          "Firma":"' . $firma . '",
+          "Fecha":"' . $date . '"
         },
         "ConsultaDatosClaves": {
-          "TipoCvePresupuestal": "'.env('APP_SIRE_API_EJERCICIO').'" ,
-          "Periodo": '.$request->anio.',
+          "TipoCvePresupuestal": "' . env('APP_SIRE_API_EJERCICIO') . '" ,
+          "Periodo": ' . $request->anio . ',
           "CargarSaldos": "S",
           "CodigosClasificadores": {
-            "Clasificador1": "'.  $request->clasificador1.'",
-            "Clasificador2": "'.  $request->clasificador2.'",
-            "Clasificador3": "'.  $request->clasificador3.'",
-            "Clasificador4": "'.  $request->clasificador4.'",
-            "Clasificador5": "'.  $request->clasificador5.'",
-            "Clasificador6": "'.  $request->clasificador6.'",
-            "Clasificador7": "'.  $request->clasificador7.'",
-            "Clasificador8": "'.  $request->clasificador8.'",
-            "Clasificador9": "'.  $request->clasificador9.'",
-            "Clasificador10":"'.  $request->clasificador10.'",
-            "Clasificador11":"'.  $request->clasificador11.'"
+            "Clasificador1": "' . $request->clasificador1 . '",
+            "Clasificador2": "' . $request->clasificador2 . '",
+            "Clasificador3": "' . $request->clasificador3 . '",
+            "Clasificador4": "' . $request->clasificador4 . '",
+            "Clasificador5": "' . $request->clasificador5 . '",
+            "Clasificador6": "' . $request->clasificador6 . '",
+            "Clasificador7": "' . $request->clasificador7 . '",
+            "Clasificador8": "' . $request->clasificador8 . '",
+            "Clasificador9": "' . $request->clasificador9 . '",
+            "Clasificador10":"' . $request->clasificador10 . '",
+            "Clasificador11":"' . $request->clasificador11 . '"
           },
           "MomentosContables": {
             "Estimado": "N",
@@ -139,147 +163,133 @@ public function ConsultaPresupuesto(Request $request){
             "PorPagar": "N"
           },
           "Meses": {
-            "Enero":      '.$enero.' ,
-            "Febrero":    '.$febrero.' ,
-            "Marzo":      '.$marzo.' ,
-            "Abril":      '.$abril.' ,
-            "Mayo":       '.$mayo.' ,
-            "Junio":      '.$junio.' ,
-            "Julio":      '.$julio.' ,
-            "Agosto":     '.$agosto.' ,
-            "Septiembre": '.$septiembre.' ,
-            "Octubre":    '.$octubre.' ,
-            "Noviembre":  '.$noviembre.' ,
-            "Diciembre":  '.$diciembre.'
+            "Enero":      ' . $enero . ' ,
+            "Febrero":    ' . $febrero . ' ,
+            "Marzo":      ' . $marzo . ' ,
+            "Abril":      ' . $abril . ' ,
+            "Mayo":       ' . $mayo . ' ,
+            "Junio":      ' . $junio . ' ,
+            "Julio":      ' . $julio . ' ,
+            "Agosto":     ' . $agosto . ' ,
+            "Septiembre": ' . $septiembre . ' ,
+            "Octubre":    ' . $octubre . ' ,
+            "Noviembre":  ' . $noviembre . ' ,
+            "Diciembre":  ' . $diciembre . '
           }
         }
       }
     }
   }';
 
-   
+            $client = new Client();
+            $headers = [
+                'Content-Type' => 'application/json',
+            ];
+            $req = new Psr7Request('POST', env('APP_SIRE_URL') . '/apirest/catalogos/RConsultaClavesPresupuestales', $headers, $body);
+            $res = $client->sendAsync($req)->wait();
 
-       
-        $client = new Client();
-        $headers = [
-                   'Content-Type' => 'application/json'
-                   ];
-         $req = new Psr7Request('POST', env('APP_SIRE_URL').'/apirest/catalogos/RConsultaClavesPresupuestales', $headers, $body);
-         $res = $client->sendAsync($req)->wait();
-      
-         $data = json_decode($res->getBody()->getContents());
-        
-         if($data === null){
-          throw new Exception('Servicio SIREGOB No Disponible');
-         }else{
+            $data = json_decode($res->getBody()->getContents());
 
-          if($data->Result->Response->Error){
-            throw new Exception($data->Result->Response->Error);
-         }else{
-            $response=  $data->Result->Response->Claves->Clave;
+            if ($data === null) {
+                throw new Exception('Servicio SIREGOB No Disponible');
+            } else {
 
-         }
+                if ($data->Result->Response->Error) {
+                    throw new Exception($data->Result->Response->Error);
+                } else {
+                    $response = $data->Result->Response->Claves->Clave;
 
-         }
+                }
 
+            }
 
-       
+        } catch (\Exception $e) {
+            $NUMCODE = 1;
+            $STRMESSAGE = $e->getMessage();
+            $SUCCESS = false;
+        }
 
+        return response()->json(
+            [
+                'NUMCODE' => $NUMCODE,
+                'STRMESSAGE' => $STRMESSAGE,
+                'RESPONSE' => $response,
+                'SUCCESS' => $SUCCESS,
+            ]
+        );
 
-
-
-
-    } catch (\Exception $e) {
-        $NUMCODE = 1;
-        $STRMESSAGE = $e->getMessage();
-        $SUCCESS = false;
     }
 
-    return response()->json(
-        [
-            'NUMCODE' => $NUMCODE,
-            'STRMESSAGE' => $STRMESSAGE,
-            'RESPONSE' => $response,
-            'SUCCESS' => $SUCCESS
-        ]
-    );
+    public function ConsultaPresupuestoAnual(Request $request)
+    {
 
-}
+        $SUCCESS = true;
+        $NUMCODE = 0;
+        $STRMESSAGE = 'Exito';
+        $response = "";
+        $responses = "";
+        try {
 
+            if ($request->anio === "") {
+                throw new Exception("El Parámetro anio es Obligatorio");
+            }
 
+            date_default_timezone_set('America/Mexico_City');
+            $date = date("YmdHis");
+            $public = env('APP_SIRE_API_PUBLIC');
+            $private = env('APP_SIRE_API_SECRET');
+            $firma = $this->generaHMAC($public, $private, 'RConsultaClavesPresupuestales');
 
-public function ConsultaPresupuestoAnual(Request $request){
+            $enero = '"S"';
+            $febrero = '"S"';
+            $marzo = '"S"';
+            $abril = '"S"';
+            $mayo = '"S"';
+            $junio = '"S"';
+            $julio = '"S"';
+            $agosto = '"S"';
+            $septiembre = '"S"';
+            $octubre = '"S"';
+            $noviembre = '"S"';
+            $diciembre = '"S"';
 
+            $enero = '"S"';
+            $febrero = '"S"';
+            $marzo = '"S"';
+            $abril = '"S"';
+            $mayo = '"S"';
+            $junio = '"S"';
+            $julio = '"S"';
+            $agosto = '"S"';
+            $septiembre = '"S"';
+            $octubre = '"S"';
+            $noviembre = '"S"';
+            $diciembre = '"S"';
 
-  $SUCCESS = true;
-  $NUMCODE = 0;
-  $STRMESSAGE = 'Exito';
-  $response = "";
-  $responses= "";
-  try {
-
-      if($request->anio ===""){
-          throw new Exception("El Parámetro anio es Obligatorio");
-      }
-
-      date_default_timezone_set('America/Mexico_City');
-      $date = date("YmdHis");
-      $public  =  env('APP_SIRE_API_PUBLIC');
-      $private =  env('APP_SIRE_API_SECRET');
-      $firma =  $this->generaHMAC($public,$private,'RConsultaClavesPresupuestales');
-
-      $enero       ='"S"';
-      $febrero     ='"S"';
-      $marzo       ='"S"';
-      $abril       ='"S"';
-      $mayo        ='"S"';
-      $junio       ='"S"';
-      $julio       ='"S"';
-      $agosto      ='"S"';
-      $septiembre  ='"S"';
-      $octubre     ='"S"';
-      $noviembre   ='"S"';
-      $diciembre   ='"S"';
-
-      $enero ='"S"';
-      $febrero ='"S"';
-      $marzo ='"S"';
-      $abril ='"S"';
-      $mayo ='"S"';
-      $junio ='"S"';
-      $julio ='"S"';
-      $agosto ='"S"';
-      $septiembre ='"S"';
-      $octubre ='"S"';
-      $noviembre ='"S"';
-      $diciembre ='"S"';
-
-
-
-    $body = '{
+            $body = '{
   "Input": {
     "Request": {
       "Acceso": {
-        "ApiPublic":"'.$public.'",
-        "Firma":"'.$firma.'",
-        "Fecha":"'.$date.'"
+        "ApiPublic":"' . $public . '",
+        "Firma":"' . $firma . '",
+        "Fecha":"' . $date . '"
       },
       "ConsultaDatosClaves": {
-        "TipoCvePresupuestal": "'.env('APP_SIRE_API_EJERCICIO').'" ,
-        "Periodo": '.$request->anio.',
+        "TipoCvePresupuestal": "' . env('APP_SIRE_API_EJERCICIO') . '" ,
+        "Periodo": ' . $request->anio . ',
         "CargarSaldos": "S",
         "CodigosClasificadores": {
-          "Clasificador1": "'.  $request->clasificador1.'",
-          "Clasificador2": "'.  $request->clasificador2.'",
-          "Clasificador3": "'.  $request->clasificador3.'",
-          "Clasificador4": "'.  $request->clasificador4.'",
-          "Clasificador5": "'.  $request->clasificador5.'",
-          "Clasificador6": "'.  $request->clasificador6.'",
-          "Clasificador7": "'.  $request->clasificador7.'",
-          "Clasificador8": "'.  $request->clasificador8.'",
-          "Clasificador9": "'.  $request->clasificador9.'",
-          "Clasificador10":"'.  $request->clasificador10.'",
-          "Clasificador11":"'.  $request->clasificador11.'"
+          "Clasificador1": "' . $request->clasificador1 . '",
+          "Clasificador2": "' . $request->clasificador2 . '",
+          "Clasificador3": "' . $request->clasificador3 . '",
+          "Clasificador4": "' . $request->clasificador4 . '",
+          "Clasificador5": "' . $request->clasificador5 . '",
+          "Clasificador6": "' . $request->clasificador6 . '",
+          "Clasificador7": "' . $request->clasificador7 . '",
+          "Clasificador8": "' . $request->clasificador8 . '",
+          "Clasificador9": "' . $request->clasificador9 . '",
+          "Clasificador10":"' . $request->clasificador10 . '",
+          "Clasificador11":"' . $request->clasificador11 . '"
         },
         "MomentosContables": {
           "Estimado": "N",
@@ -305,95 +315,88 @@ public function ConsultaPresupuestoAnual(Request $request){
           "PorPagar": "S"
         },
         "Meses": {
-          "Enero":      '.$enero.' ,
-          "Febrero":    '.$febrero.' ,
-          "Marzo":      '.$marzo.' ,
-          "Abril":      '.$abril.' ,
-          "Mayo":       '.$mayo.' ,
-          "Junio":      '.$junio.' ,
-          "Julio":      '.$julio.' ,
-          "Agosto":     '.$agosto.' ,
-          "Septiembre": '.$septiembre.' ,
-          "Octubre":    '.$octubre.' ,
-          "Noviembre":  '.$noviembre.' ,
-          "Diciembre":  '.$diciembre.'
+          "Enero":      ' . $enero . ' ,
+          "Febrero":    ' . $febrero . ' ,
+          "Marzo":      ' . $marzo . ' ,
+          "Abril":      ' . $abril . ' ,
+          "Mayo":       ' . $mayo . ' ,
+          "Junio":      ' . $junio . ' ,
+          "Julio":      ' . $julio . ' ,
+          "Agosto":     ' . $agosto . ' ,
+          "Septiembre": ' . $septiembre . ' ,
+          "Octubre":    ' . $octubre . ' ,
+          "Noviembre":  ' . $noviembre . ' ,
+          "Diciembre":  ' . $diciembre . '
         }
       }
     }
   }
 }';
 
+            $client = new Client();
+            $headers = [
+                'Content-Type' => 'application/json',
+            ];
+            $req = new Psr7Request('POST', env('APP_SIRE_URL') . '/apirest/catalogos/RConsultaClavesPresupuestales', $headers, $body);
+            $res = $client->sendAsync($req)->wait();
 
-      $client = new Client();
-      $headers = [
-                 'Content-Type' => 'application/json'
-                 ];
-       $req = new Psr7Request('POST', env('APP_SIRE_URL').'/apirest/catalogos/RConsultaClavesPresupuestales', $headers, $body);
-       $res = $client->sendAsync($req)->wait();
-      
-       $data = json_decode($res->getBody()->getContents());
-   
-       if($data === null){
-        throw new Exception('Servicio SIREGOB No Disponible');
-       }else{
+            $data = json_decode($res->getBody()->getContents());
 
-        if($data->Result->Response->Error){
-          throw new Exception($data->Result->Response->Error);
-       }else{
-          $response= $data->Result->Response->Claves->Clave;
+            if ($data === null) {
+                throw new Exception('Servicio SIREGOB No Disponible');
+            } else {
 
-          $totalAprobado    = 0;
-          $totalDisponible  = 0;
-          $totalDevengado   = 0;
-          $totalEjercido    = 0;
-          $totalPagado      = 0;
-          $totalPorPagar    = 0;
-          foreach ($response as &$valor) {
+                if ($data->Result->Response->Error) {
+                    throw new Exception($data->Result->Response->Error);
+                } else {
+                    $response = $data->Result->Response->Claves->Clave;
 
-            $totalAprobado=  $totalAprobado + $valor->Saldos->Aprobado->Total;
-            $totalDisponible=  $totalDisponible + $valor->Saldos->Disponible->Total;
-            $totalDevengado=  $totalDevengado + $valor->Saldos->Devengado->Total;
-            $totalEjercido=  $totalEjercido + $valor->Saldos->Ejercido->Total;
-            $totalPagado=  $totalPagado + $valor->Saldos->Pagado->Total;
-            $totalPorPagar=  $totalPorPagar + $valor->Saldos->PorPagar->Total;
+                    $totalAprobado = 0;
+                    $totalDisponible = 0;
+                    $totalDevengado = 0;
+                    $totalEjercido = 0;
+                    $totalPagado = 0;
+                    $totalPorPagar = 0;
+                    foreach ($response as &$valor) {
 
-          
+                        $totalAprobado = $totalAprobado + $valor->Saldos->Aprobado->Total;
+                        $totalDisponible = $totalDisponible + $valor->Saldos->Disponible->Total;
+                        $totalDevengado = $totalDevengado + $valor->Saldos->Devengado->Total;
+                        $totalEjercido = $totalEjercido + $valor->Saldos->Ejercido->Total;
+                        $totalPagado = $totalPagado + $valor->Saldos->Pagado->Total;
+                        $totalPorPagar = $totalPorPagar + $valor->Saldos->PorPagar->Total;
+
+                    }
+
+                }
+
+            }
+
+            $responses = [
+                "P_AUTORIZADO" => $totalAprobado,
+                "P_MODIFICADO" => 0,
+                "P_DISPONIBLE" => $totalDisponible,
+                "P_DEVENGADO" => $totalDevengado,
+                "P_EJERCIDO" => $totalEjercido,
+                "P_PAGADO" => $totalPagado,
+                "P_PORPAGAR" => $totalPorPagar,
+            ];
+
+        } catch (\Exception $e) {
+            $NUMCODE = 1;
+            $STRMESSAGE = $e->getMessage();
+            $SUCCESS = false;
         }
 
-       }
+        return response()->json(
+            [
+                'NUMCODE' => $NUMCODE,
+                'STRMESSAGE' => $STRMESSAGE,
+                'RESPONSE' => $responses,
+                'SUCCESS' => $SUCCESS,
+            ]
+        );
 
-       }
-
-     
-
-
-       $responses = [
-               "P_AUTORIZADO"=>$totalAprobado, 
-               "P_MODIFICADO" =>0,
-               "P_DISPONIBLE" =>$totalDisponible,
-               "P_DEVENGADO" =>$totalDevengado,
-               "P_EJERCIDO" =>$totalEjercido,
-               "P_PAGADO" =>$totalPagado,
-               "P_PORPAGAR" =>$totalPorPagar
-       ];
-
-
-  } catch (\Exception $e) {
-      $NUMCODE = 1;
-      $STRMESSAGE = $e->getMessage();
-      $SUCCESS = false;
-  }
-
-  return response()->json(
-      [
-          'NUMCODE' => $NUMCODE,
-          'STRMESSAGE' => $STRMESSAGE,
-          'RESPONSE' => $responses,
-          'SUCCESS' => $SUCCESS
-      ]
-  );
-
-}
-
+    }
 
 }
