@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ProcedimientosController;
 use App\Http\Controllers\SireApis;
 use Illuminate\Support\Facades\Route;
 
@@ -20,5 +21,6 @@ Route::group([
     Route::post('validacion', [SireApis::class, 'validacion']);
     Route::post('ConsultaPresupuesto', [SireApis::class, 'ConsultaPresupuesto']);
     Route::post('ConsultaPresupuestoAnual', [SireApis::class, 'ConsultaPresupuestoAnual']);
+    Route::post('getPagosbySP', [ProcedimientosController::class, 'getPagosbySP']);
 
 });
