@@ -22,5 +22,6 @@ Route::group([
     Route::post('ConsultaPresupuesto', [SireApis::class, 'ConsultaPresupuesto']);
     Route::post('ConsultaPresupuestoAnual', [SireApis::class, 'ConsultaPresupuestoAnual']);
     Route::post('getPagosbySP', [ProcedimientosController::class, 'getPagosbySP']);
+    Route::post('getEstatusbySP', [ProcedimientosController::class, 'getEstatusbySP']);
 
 });
