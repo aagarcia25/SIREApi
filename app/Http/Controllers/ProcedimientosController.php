@@ -35,4 +35,31 @@ class ProcedimientosController extends Controller
         );
     }
 
+    public function getEstatusbySP(Request $request)
+    {
+
+        $SUCCESS = true;
+        $NUMCODE = 0;
+        $STRMESSAGE = 'Exito';
+        $response = "";
+
+        try {
+
+            $response = DB::select('EXEC DAMOP_EstadoSP ?', [$request->sp]);
+        } catch (\Exception $e) {
+            $NUMCODE = 1;
+            $STRMESSAGE = $e->getMessage();
+            $SUCCESS = false;
+        }
+
+        return response()->json(
+            [
+                'NUMCODE' => $NUMCODE,
+                'STRMESSAGE' => $STRMESSAGE,
+                'RESPONSE' => $response,
+                'SUCCESS' => $SUCCESS,
+            ]
+        );
+    }
+
 }
