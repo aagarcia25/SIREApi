@@ -185,8 +185,11 @@ class SireApis extends Controller
             $headers = [
                 'Content-Type' => 'application/json',
             ];
+            $options = [
+                'verify' => false,
+            ];
             $req = new Psr7Request('POST', env('APP_SIRE_URL') . '/apirest/catalogos/RConsultaClavesPresupuestales', $headers, $body);
-            $res = $client->sendAsync($req)->wait();
+            $res = $client->sendAsync($req, $options)->wait();
 
             $data = json_decode($res->getBody()->getContents());
 
