@@ -62,4 +62,30 @@ class ProcedimientosController extends Controller
         );
     }
 
+    public function getEmpleado(Request $request)
+    {
+
+        $SUCCESS = true;
+        $NUMCODE = 0;
+        $STRMESSAGE = 'Exito';
+        $response = "";
+
+        try {
+
+            $response = DB::select('EXEC Cat_Pers ?', [$request->NumeroEmpleado]);
+        } catch (\Exception $e) {
+            $NUMCODE = 1;
+            $STRMESSAGE = $e->getMessage();
+            $SUCCESS = false;
+        }
+
+        return response()->json(
+            [
+                'NUMCODE' => $NUMCODE,
+                'STRMESSAGE' => $STRMESSAGE,
+                'RESPONSE' => $response,
+                'SUCCESS' => $SUCCESS,
+            ]
+        );
+    }
 }
