@@ -115,71 +115,71 @@ class SireApis extends Controller
             }
 
             $body = '{
-    "Input": {
-      "Request": {
-        "Acceso": {
-          "ApiPublic":"' . $public . '",
-          "Firma":"' . $firma . '",
-          "Fecha":"' . $date . '"
-        },
-        "ConsultaDatosClaves": {
-          "TipoCvePresupuestal": "' . env('APP_SIRE_API_EJERCICIO') . '" ,
-          "Periodo": ' . $request->anio . ',
-          "CargarSaldos": "S",
-          "CodigosClasificadores": {
-            "Clasificador1": "' . $request->clasificador1 . '",
-            "Clasificador2": "' . $request->clasificador2 . '",
-            "Clasificador3": "' . $request->clasificador3 . '",
-            "Clasificador4": "' . $request->clasificador4 . '",
-            "Clasificador5": "' . $request->clasificador5 . '",
-            "Clasificador6": "' . $request->clasificador6 . '",
-            "Clasificador7": "' . $request->clasificador7 . '",
-            "Clasificador8": "' . $request->clasificador8 . '",
-            "Clasificador9": "' . $request->clasificador9 . '",
-            "Clasificador10":"' . $request->clasificador10 . '",
-            "Clasificador11":"' . $request->clasificador11 . '"
-          },
-          "MomentosContables": {
-            "Estimado": "N",
-            "Aprobado": "N",
-            "Ampliacion": "N",
-            "Reduccion": "N",
-            "Transferencia_Aumento": "N",
-            "Transferencia_Reduccion": "N",
-            "Saldo": "N",
-            "PreComprometer": "N",
-            "Disponible": "S",
-            "Comprometido": "N",
-            "PreComprometido_Sin_Comprometer": "N",
-            "Para_PreComprometer": "N",
-            "Devengado": "N",
-            "No_Devengado": "N",
-            "PreComprometido_Sin_Deven": "N",
-            "Ejercido": "N",
-            "Recaudado": "N",
-            "Devengado_Sin_Ejerc": "N",
-            "Pagado": "N",
-            "Ejercido_Sin_Pagar": "N",
-            "PorPagar": "N"
-          },
-          "Meses": {
-            "Enero":      ' . $enero . ' ,
-            "Febrero":    ' . $febrero . ' ,
-            "Marzo":      ' . $marzo . ' ,
-            "Abril":      ' . $abril . ' ,
-            "Mayo":       ' . $mayo . ' ,
-            "Junio":      ' . $junio . ' ,
-            "Julio":      ' . $julio . ' ,
-            "Agosto":     ' . $agosto . ' ,
-            "Septiembre": ' . $septiembre . ' ,
-            "Octubre":    ' . $octubre . ' ,
-            "Noviembre":  ' . $noviembre . ' ,
-            "Diciembre":  ' . $diciembre . '
-          }
-        }
-      }
-    }
-  }';
+                     "Input": {
+                       "Request": {
+                         "Acceso": {
+                           "ApiPublic":"' . $public . '",
+                           "Firma":"' . $firma . '",
+                           "Fecha":"' . $date . '"
+                         },
+                         "ConsultaDatosClaves": {
+                           "TipoCvePresupuestal": "' . env('APP_SIRE_API_EJERCICIO') . '" ,
+                           "Periodo": ' . $request->anio . ',
+                           "CargarSaldos": "S",
+                           "CodigosClasificadores": {
+                             "Clasificador1": "' . $request->clasificador1 . '",
+                             "Clasificador2": "' . $request->clasificador2 . '",
+                             "Clasificador3": "' . $request->clasificador3 . '",
+                             "Clasificador4": "' . $request->clasificador4 . '",
+                             "Clasificador5": "' . $request->clasificador5 . '",
+                             "Clasificador6": "' . $request->clasificador6 . '",
+                             "Clasificador7": "' . $request->clasificador7 . '",
+                             "Clasificador8": "' . $request->clasificador8 . '",
+                             "Clasificador9": "' . $request->clasificador9 . '",
+                             "Clasificador10":"' . $request->clasificador10 . '",
+                             "Clasificador11":"' . $request->clasificador11 . '"
+                           },
+                           "MomentosContables": {
+                             "Estimado": "N",
+                             "Aprobado": "N",
+                             "Ampliacion": "N",
+                             "Reduccion": "N",
+                             "Transferencia_Aumento": "N",
+                             "Transferencia_Reduccion": "N",
+                             "Saldo": "N",
+                             "PreComprometer": "N",
+                             "Disponible": "S",
+                             "Comprometido": "N",
+                             "PreComprometido_Sin_Comprometer": "N",
+                             "Para_PreComprometer": "N",
+                             "Devengado": "N",
+                             "No_Devengado": "N",
+                             "PreComprometido_Sin_Deven": "N",
+                             "Ejercido": "N",
+                             "Recaudado": "N",
+                             "Devengado_Sin_Ejerc": "N",
+                             "Pagado": "N",
+                             "Ejercido_Sin_Pagar": "N",
+                             "PorPagar": "N"
+                           },
+                           "Meses": {
+                             "Enero":      ' . $enero . ' ,
+                             "Febrero":    ' . $febrero . ' ,
+                             "Marzo":      ' . $marzo . ' ,
+                             "Abril":      ' . $abril . ' ,
+                             "Mayo":       ' . $mayo . ' ,
+                             "Junio":      ' . $junio . ' ,
+                             "Julio":      ' . $julio . ' ,
+                             "Agosto":     ' . $agosto . ' ,
+                             "Septiembre": ' . $septiembre . ' ,
+                             "Octubre":    ' . $octubre . ' ,
+                             "Noviembre":  ' . $noviembre . ' ,
+                             "Diciembre":  ' . $diciembre . '
+                           }
+                         }
+                       }
+                     }
+                   }';
 
             $client = new Client();
             $headers = [
@@ -201,11 +201,8 @@ class SireApis extends Controller
                     throw new Exception($data->Result->Response->Error);
                 } else {
                     $response = $data->Result->Response->Claves->Clave;
-
                 }
-
             }
-
         } catch (\Exception $e) {
             $NUMCODE = 1;
             $STRMESSAGE = $e->getMessage();
@@ -220,7 +217,6 @@ class SireApis extends Controller
                 'SUCCESS' => $SUCCESS,
             ]
         );
-
     }
 
     public function ConsultaPresupuestoAnual(Request $request)
@@ -270,71 +266,71 @@ class SireApis extends Controller
             $diciembre = '"S"';
 
             $body = '{
-  "Input": {
-    "Request": {
-      "Acceso": {
-        "ApiPublic":"' . $public . '",
-        "Firma":"' . $firma . '",
-        "Fecha":"' . $date . '"
-      },
-      "ConsultaDatosClaves": {
-        "TipoCvePresupuestal": "' . env('APP_SIRE_API_EJERCICIO') . '" ,
-        "Periodo": ' . $request->anio . ',
-        "CargarSaldos": "S",
-        "CodigosClasificadores": {
-          "Clasificador1": "' . $request->clasificador1 . '",
-          "Clasificador2": "' . $request->clasificador2 . '",
-          "Clasificador3": "' . $request->clasificador3 . '",
-          "Clasificador4": "' . $request->clasificador4 . '",
-          "Clasificador5": "' . $request->clasificador5 . '",
-          "Clasificador6": "' . $request->clasificador6 . '",
-          "Clasificador7": "' . $request->clasificador7 . '",
-          "Clasificador8": "' . $request->clasificador8 . '",
-          "Clasificador9": "' . $request->clasificador9 . '",
-          "Clasificador10":"' . $request->clasificador10 . '",
-          "Clasificador11":"' . $request->clasificador11 . '"
-        },
-        "MomentosContables": {
-          "Estimado": "N",
-          "Aprobado": "S",
-          "Ampliacion": "N",
-          "Reduccion": "N",
-          "Transferencia_Aumento": "N",
-          "Transferencia_Reduccion": "N",
-          "Saldo": "N",
-          "PreComprometer": "N",
-          "Disponible": "S",
-          "Comprometido": "N",
-          "PreComprometido_Sin_Comprometer": "N",
-          "Para_PreComprometer": "N",
-          "Devengado": "S",
-          "No_Devengado": "N",
-          "PreComprometido_Sin_Deven": "N",
-          "Ejercido": "S",
-          "Recaudado": "N",
-          "Devengado_Sin_Ejerc": "N",
-          "Pagado": "S",
-          "Ejercido_Sin_Pagar": "N",
-          "PorPagar": "S"
-        },
-        "Meses": {
-          "Enero":      ' . $enero . ' ,
-          "Febrero":    ' . $febrero . ' ,
-          "Marzo":      ' . $marzo . ' ,
-          "Abril":      ' . $abril . ' ,
-          "Mayo":       ' . $mayo . ' ,
-          "Junio":      ' . $junio . ' ,
-          "Julio":      ' . $julio . ' ,
-          "Agosto":     ' . $agosto . ' ,
-          "Septiembre": ' . $septiembre . ' ,
-          "Octubre":    ' . $octubre . ' ,
-          "Noviembre":  ' . $noviembre . ' ,
-          "Diciembre":  ' . $diciembre . '
-        }
-      }
-    }
-  }
-}';
+                       "Input": {
+                         "Request": {
+                           "Acceso": {
+                             "ApiPublic":"' . $public . '",
+                             "Firma":"' . $firma . '",
+                             "Fecha":"' . $date . '"
+                           },
+                           "ConsultaDatosClaves": {
+                             "TipoCvePresupuestal": "' . env('APP_SIRE_API_EJERCICIO') . '" ,
+                             "Periodo": ' . $request->anio . ',
+                             "CargarSaldos": "S",
+                             "CodigosClasificadores": {
+                               "Clasificador1": "' . $request->clasificador1 . '",
+                               "Clasificador2": "' . $request->clasificador2 . '",
+                               "Clasificador3": "' . $request->clasificador3 . '",
+                               "Clasificador4": "' . $request->clasificador4 . '",
+                               "Clasificador5": "' . $request->clasificador5 . '",
+                               "Clasificador6": "' . $request->clasificador6 . '",
+                               "Clasificador7": "' . $request->clasificador7 . '",
+                               "Clasificador8": "' . $request->clasificador8 . '",
+                               "Clasificador9": "' . $request->clasificador9 . '",
+                               "Clasificador10":"' . $request->clasificador10 . '",
+                               "Clasificador11":"' . $request->clasificador11 . '"
+                             },
+                             "MomentosContables": {
+                               "Estimado": "N",
+                               "Aprobado": "S",
+                               "Ampliacion": "N",
+                               "Reduccion": "N",
+                               "Transferencia_Aumento": "N",
+                               "Transferencia_Reduccion": "N",
+                               "Saldo": "N",
+                               "PreComprometer": "N",
+                               "Disponible": "S",
+                               "Comprometido": "N",
+                               "PreComprometido_Sin_Comprometer": "N",
+                               "Para_PreComprometer": "N",
+                               "Devengado": "S",
+                               "No_Devengado": "N",
+                               "PreComprometido_Sin_Deven": "N",
+                               "Ejercido": "S",
+                               "Recaudado": "N",
+                               "Devengado_Sin_Ejerc": "N",
+                               "Pagado": "S",
+                               "Ejercido_Sin_Pagar": "N",
+                               "PorPagar": "S"
+                             },
+                             "Meses": {
+                               "Enero":      ' . $enero . ' ,
+                               "Febrero":    ' . $febrero . ' ,
+                               "Marzo":      ' . $marzo . ' ,
+                               "Abril":      ' . $abril . ' ,
+                               "Mayo":       ' . $mayo . ' ,
+                               "Junio":      ' . $junio . ' ,
+                               "Julio":      ' . $julio . ' ,
+                               "Agosto":     ' . $agosto . ' ,
+                               "Septiembre": ' . $septiembre . ' ,
+                               "Octubre":    ' . $octubre . ' ,
+                               "Noviembre":  ' . $noviembre . ' ,
+                               "Diciembre":  ' . $diciembre . '
+                             }
+                           }
+                         }
+                       }
+                     }';
 
             $client = new Client();
             $headers = [
@@ -368,11 +364,8 @@ class SireApis extends Controller
                         $totalEjercido = $totalEjercido + $valor->Saldos->Ejercido->Total;
                         $totalPagado = $totalPagado + $valor->Saldos->Pagado->Total;
                         $totalPorPagar = $totalPorPagar + $valor->Saldos->PorPagar->Total;
-
                     }
-
                 }
-
             }
 
             $responses = [
@@ -384,7 +377,6 @@ class SireApis extends Controller
                 "P_PAGADO" => $totalPagado,
                 "P_PORPAGAR" => $totalPorPagar,
             ];
-
         } catch (\Exception $e) {
             $NUMCODE = 1;
             $STRMESSAGE = $e->getMessage();
@@ -399,7 +391,5 @@ class SireApis extends Controller
                 'SUCCESS' => $SUCCESS,
             ]
         );
-
     }
-
 }
